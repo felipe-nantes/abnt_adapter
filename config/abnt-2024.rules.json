@@ -1,0 +1,213 @@
+{
+  "profile": "ABNT-2024",
+  "version": "1.0.0",
+  "_mvpConstraints": {
+    "noExternalApi": true,
+    "noLlm": true,
+    "mvpOutput": "docx-only",
+    "note": "MVP roda 100% com código + open source (lib docx/python-docx). Sem API paga, sem LLM. Saída do MVP é APENAS .docx; exportação .pdf fica para fase posterior. Estruturação por heurística regex; pré-textuais por formulário manual + pré-preenchimento regex. Qualquer feature que exija API/LLM pertence a fase posterior.",
+    "pdfDeferred": "Exportação .pdf é fase posterior (provável via LibreOffice headless ou abnTeX2, que exigem binário/container). Removê-la do MVP permite rodar em serverless puro (ex.: Vercel free tier), sem VPS."
+  },
+  "_units": {
+    "distance": "cm",
+    "fontSize": "pt",
+    "lineSpacing": "multiplier (1.0 = simples, 1.5)",
+    "note": "Valores em unidades humanas. O motor converte para a lib de saída (docx: twips = cm*566.93, half-points = pt*2)."
+  },
+  "norms": {
+    "apresentacao": "NBR 14724:2024",
+    "citacoes": "NBR 10520:2023",
+    "referencias": "NBR 6023:2018 (errata 2020) — CONFIRMAR no catálogo oficial; há fontes citando 2025",
+    "numeracaoProgressiva": "NBR 6024:2012",
+    "sumario": "NBR 6027:2012",
+    "resumo": "NBR 6028:2021"
+  },
+
+  "page": {
+    "size": "A4",
+    "widthCm": 21.0,
+    "heightCm": 29.7,
+    "margins": { "top": 3.0, "left": 3.0, "bottom": 2.0, "right": 2.0 }
+  },
+
+  "fonts": {
+    "allowedFamilies": ["Times New Roman", "Arial"],
+    "defaultFamily": "Times New Roman",
+    "color": "#000000",
+    "sizesPt": {
+      "body": 12,
+      "longCitation": 10,
+      "footnote": 10,
+      "caption": 10,
+      "source": 10,
+      "pageNumber": 10,
+      "fichaCatalografica": 10,
+      "natureNote": 10
+    }
+  },
+
+  "spacing": {
+    "body": 1.5,
+    "single": 1.0,
+    "singleSpacedElements": [
+      "longCitation",
+      "footnote",
+      "referenceEntry",
+      "caption",
+      "source",
+      "fichaCatalografica",
+      "natureNote",
+      "tableContent"
+    ],
+    "betweenReferences": "blankLine",
+    "paragraphSpaceBeforePt": 0,
+    "paragraphSpaceAfterPt": 0
+  },
+
+  "paragraph": {
+    "firstLineIndentCm": 1.25,
+    "alignment": "justify",
+    "bodyTextColor": "#000000"
+  },
+
+  "pagination": {
+    "numberFormat": "arabic",
+    "position": "top-right",
+    "distanceFromTopCm": 2.0,
+    "countStartsAt": "folhaDeRosto",
+    "displayStartsAt": "firstTextualPage",
+    "excludedFromCount": ["capa", "versoFolhaDeRosto"],
+    "_note2024": "NBR 14724:2024 — o verso da folha de rosto (ficha catalográfica) NÃO é contado nem numerado. A capa nunca é contada."
+  },
+
+  "sections": {
+    "numbering": {
+      "style": "arabic",
+      "progressive": true,
+      "separatorAfterNumber": " ",
+      "punctuationAfterNumber": "none",
+      "_rule": "NBR 6024 — entre o número e o título há apenas UM espaço, sem ponto/traço. Ex.: '1 INTRODUÇÃO', nunca '1. INTRODUÇÃO'."
+    },
+    "primaryStartsNewPage": true,
+    "alignment": "left",
+    "titleStylesByLevel": {
+      "1": { "case": "uppercase", "bold": true, "italic": false },
+      "2": { "case": "title", "bold": true, "italic": false },
+      "3": { "case": "sentence", "bold": true, "italic": false },
+      "4": { "case": "sentence", "bold": false, "italic": true },
+      "5": { "case": "sentence", "bold": false, "italic": false }
+    },
+    "_titleStylesNote": "NBR 14724/6024 exigem diferenciação tipográfica progressiva e CONSISTENTE entre sumário e texto; o esquema acima é um default válido e configurável por perfil/instituição.",
+    "unnumberedTitles": {
+      "alignment": "center",
+      "case": "uppercase",
+      "bold": true,
+      "appliesTo": ["ERRATA", "AGRADECIMENTOS", "RESUMO", "ABSTRACT", "LISTAS", "SUMÁRIO", "REFERÊNCIAS", "GLOSSÁRIO", "APÊNDICES", "ANEXOS", "ÍNDICE"]
+    }
+  },
+
+  "citations": {
+    "norm": "NBR 10520:2023",
+    "system": "author-date",
+    "allowedSystems": ["author-date", "numeric"],
+    "short": {
+      "maxLines": 3,
+      "inline": true,
+      "quotes": "double",
+      "innerQuotes": "single"
+    },
+    "long": {
+      "minLines": 4,
+      "block": true,
+      "leftIndentCm": 4.0,
+      "fontSizePt": 10,
+      "lineSpacing": 1.0,
+      "quotes": "none"
+    },
+    "authorDateFormat": {
+      "personAuthorCase": "title",
+      "_rule2023": "Autor pessoa física entre parênteses em Maiúsc/minúsc. Ex.: (Silva, 2019, p. 1) — NÃO (SILVA, 2019).",
+      "legalEntityCase": "title-or-acronym",
+      "etAlFromAuthors": 4,
+      "etAlItalic": true,
+      "noPeriodBetweenTextAndCitation": true,
+      "pageAbbrev": "p.",
+      "locationAbbrev": "local."
+    }
+  },
+
+  "references": {
+    "norm": "NBR 6023:2018",
+    "alignment": "left",
+    "lineSpacing": 1.0,
+    "betweenEntries": "blankLine",
+    "order": "alphabetical-by-surname",
+    "authorSurnameCase": "uppercase",
+    "mainTitleEmphasis": "bold",
+    "mvpScope": {
+      "guaranteed": ["blockFormatting", "alignment", "spacing", "ordering"],
+      "deferred": "perTypeReconstruction",
+      "_note": "No MVP o motor garante a formatação de BLOCO da lista (alinhamento, espaçamento, ordenação alfabética) e normalização leve. A reconstrução completa por tipo de fonte (livro, artigo, site, lei…) conforme NBR 6023 fica para fase com IA + verificação."
+    }
+  },
+
+  "structureOrder": {
+    "preTextual": [
+      "capa",
+      "folhaDeRosto",
+      "errata?",
+      "folhaDeAprovacao",
+      "dedicatoria?",
+      "agradecimentos?",
+      "epigrafe?",
+      "resumoVernaculo",
+      "resumoEstrangeiro",
+      "listaIlustracoes?",
+      "listaTabelas?",
+      "listaAbreviaturas?",
+      "listaSimbolos?",
+      "sumario"
+    ],
+    "textual": ["introducao", "desenvolvimento", "conclusao"],
+    "postTextual": ["referencias", "glossario?", "apendices?", "anexos?", "indice?"],
+    "_legend": "Itens com '?' são opcionais. 'capa' é obrigatória e não contada na paginação; 'folhaDeRosto' inicia a contagem."
+  },
+
+  "preTextualElements": {
+    "capa": {
+      "required": true,
+      "alignment": "center",
+      "items": ["instituicao", "autor", "titulo", "subtitulo?", "local", "ano"]
+    },
+    "folhaDeRosto": {
+      "required": true,
+      "natureNote": {
+        "alignment": "justify-from-center",
+        "leftIndentCm": 8.0,
+        "lineSpacing": 1.0,
+        "fontSizePt": 10,
+        "_note": "Texto da natureza do trabalho recuado (≈ do meio para a direita), espaçamento simples."
+      }
+    },
+    "resumo": {
+      "norm": "NBR 6028:2021",
+      "singleParagraph": true,
+      "lineSpacing": 1.5,
+      "keywordsLabel": "Palavras-chave:",
+      "keywordsSeparator": ";",
+      "keywordsEndPunctuation": "."
+    },
+    "sumario": {
+      "norm": "NBR 6027:2012",
+      "title": "SUMÁRIO",
+      "titleAlignment": "center",
+      "showsOnly": ["textual", "postTextual"],
+      "_note": "Elementos pré-textuais NÃO entram no sumário. Diferenciação tipográfica idêntica à do texto."
+    }
+  },
+
+  "customRulesOverrides": {
+    "_note": "Campo de regras do usuário no MVP é mapeado para overrides destes parâmetros (ex.: fontFamily, citationSystem, addEpigrafe). Overrides são validados contra a norma para não gerar conflito.",
+    "overridable": ["fonts.defaultFamily", "citations.system", "sections.titleStylesByLevel", "page.margins"]
+  }
+}
