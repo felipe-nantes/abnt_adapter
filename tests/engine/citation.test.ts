@@ -1,16 +1,20 @@
 import { Document } from 'docx';
 import { loadRules } from '../../src/rules/load';
 import { buildSection } from '../../src/engine/section';
-import { buildLongCitation, buildCitationText } from '../../src/engine/citation';
+import { buildLongCitation, buildCitationRuns } from '../../src/engine/citation';
 import { toBuffer } from '../../src/exporter/docx';
 import { readDocx } from '../helpers/ooxml';
 
-test('buildCitationText usa et al. a partir de 4 autores', () => {
+test('buildCitationRuns usa et al. (em itálico) a partir de 4 autores', () => {
   const rules = loadRules('abnt-2024');
-  const four = buildCitationText({ authors: ['SILVA','SOUZA','LIMA','COSTA'], year: '2020' }, rules);
-  expect(four).toBe('(Silva et al., 2020)');
-  const three = buildCitationText({ authors: ['SILVA','SOUZA','LIMA'], year: '2020' }, rules);
-  expect(three).toBe('(Silva; Souza; Lima, 2020)');
+  const four = buildCitationRuns({ authors: ['SILVA','SOUZA','LIMA','COSTA'], year: '2020' }, rules);
+  expect(four).toEqual([
+    { text: '(Silva ' },
+    { text: 'et al.', italic: true },
+    { text: ', 2020)' },
+  ]);
+  const three = buildCitationRuns({ authors: ['SILVA','SOUZA','LIMA'], year: '2020' }, rules);
+  expect(three).toEqual([{ text: '(Silva; Souza; Lima, 2020)' }]);
 });
 
 test('citação longa: bloco recuo 4cm, 10pt, 1,0, sem aspas', async () => {

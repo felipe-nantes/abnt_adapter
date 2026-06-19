@@ -1,6 +1,7 @@
 import { AlignmentType, Paragraph, TextRun } from 'docx';
 import type { Heading } from '../model/types';
-import type { ResolvedRules, TitleStyle } from '../rules/load';
+import type { ResolvedRules } from '../rules/load';
+import { applyCase } from './text-case';
 
 export class SectionCounter {
   private counters = [0, 0, 0, 0, 0];
@@ -9,12 +10,6 @@ export class SectionCounter {
     for (let i = level; i < 5; i++) this.counters[i] = 0;
     return this.counters.slice(0, level).join('.');
   }
-}
-
-function applyCase(text: string, c: TitleStyle['case']): string {
-  if (c === 'uppercase') return text.toUpperCase();
-  if (c === 'sentence') return text.charAt(0).toUpperCase() + text.slice(1);
-  return text; // 'title': mantém o texto como veio do modelo
 }
 
 export function buildHeading(h: Heading, counter: SectionCounter, rules: ResolvedRules): Paragraph {

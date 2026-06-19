@@ -2,13 +2,15 @@ import { AlignmentType, Paragraph, TextRun } from 'docx';
 import type { Reference } from '../model/types';
 import type { ResolvedRules } from '../rules/load';
 import { buildRuns } from './paragraph';
+import { applyCase } from './text-case';
 
 export function buildReferences(refs: Reference[], rules: ResolvedRules): Paragraph[] {
   const title = new Paragraph({
     alignment: AlignmentType.CENTER,
     spacing: { line: rules.spacing.bodyLine, before: 0, after: 0 },
     children: [new TextRun({
-      text: 'REFERÊNCIAS', font: rules.fonts.family, size: rules.fonts.bodyHalfPt,
+      text: applyCase('Referências', rules.unnumberedTitles.case),
+      font: rules.fonts.family, size: rules.fonts.bodyHalfPt,
       color: rules.fonts.color, bold: rules.unnumberedTitles.bold,
     })],
   });

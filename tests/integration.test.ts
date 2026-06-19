@@ -11,7 +11,11 @@ test('pipeline ponta a ponta produz .docx conforme', async () => {
   expect(documentXml).toContain('1.1 Objetivos');
   expect(documentXml).toContain('2 DESENVOLVIMENTO');
   expect(documentXml).toContain('(Silva, 2019, p. 1)');
-  expect(documentXml).toContain('(Souza et al., 2021, p. 10)');
+  // "et al." (4+ autores) sai em run separado e itálico (NBR 10520) — texto fica fragmentado no XML
+  expect(documentXml).toContain('(Souza ');
+  expect(documentXml).toContain('et al.');
+  expect(documentXml).toContain(', 2021, p. 10)');
+  expect(documentXml).toMatch(/<w:i\/>/); // única fonte de itálico no fixture é o "et al."
   expect(documentXml.indexOf('Título A')).toBeLessThan(documentXml.indexOf('Título Z'));
   expect(documentXml).toMatch(/w:top="1701"/);
   expect(headerXmls.join('')).toMatch(/PAGE/);

@@ -1,7 +1,7 @@
 import { AlignmentType, Paragraph, TextRun, type IRunOptions } from 'docx';
 import type { Paragraph as ParaModel, Run } from '../model/types';
 import type { ResolvedRules } from '../rules/load';
-import { buildCitationText } from './citation';
+import { buildCitationRuns } from './citation';
 
 export function buildRuns(runs: Run[], rules: ResolvedRules): TextRun[] {
   const base: Pick<IRunOptions, 'font' | 'size' | 'color'> = {
@@ -11,7 +11,9 @@ export function buildRuns(runs: Run[], rules: ResolvedRules): TextRun[] {
   for (const r of runs) {
     if ('kind' in r && r.kind === 'shortCitation') {
       out.push(new TextRun({ ...base, text: `“${r.text}” ` }));
-      out.push(new TextRun({ ...base, text: buildCitationText(r.citation, rules) }));
+      for (const s of buildCitationRuns(r.citation, rules)) {
+        out.push(new TextRun({ ...base, text: s.text, italics: s.italic }));
+      }
     } else {
       const plain = r as { text: string; italic?: boolean; bold?: boolean };
       out.push(new TextRun({ ...base, text: plain.text, italics: plain.italic, bold: plain.bold }));

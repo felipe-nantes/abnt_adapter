@@ -16,18 +16,24 @@ export const rulesJsonSchema = z.object({
     allowedFamilies: z.array(z.string()),
     defaultFamily: z.string(),
     color: z.string(),
-    sizesPt: z.object({ body: z.number(), longCitation: z.number() }).passthrough(),
+    sizesPt: z.object({ body: z.number(), longCitation: z.number(), pageNumber: z.number() }).passthrough(),
   }),
   spacing: z.object({ body: z.number(), single: z.number() }).passthrough(),
   paragraph: z.object({ firstLineIndentCm: z.number() }).passthrough(),
   pagination: z.object({ distanceFromTopCm: z.number() }).passthrough(),
   sections: z.object({
-    titleStylesByLevel: z.record(titleStyle),
+    titleStylesByLevel: z.object({
+      '1': titleStyle, '2': titleStyle, '3': titleStyle, '4': titleStyle, '5': titleStyle,
+    }),
+    unnumberedTitles: z.object({
+      case: z.enum(['uppercase', 'title', 'sentence']),
+      bold: z.boolean(),
+    }).passthrough(),
   }).passthrough(),
   citations: z.object({
     system: z.enum(['author-date', 'numeric']),
     long: z.object({ leftIndentCm: z.number() }).passthrough(),
-    authorDateFormat: z.object({ etAlFromAuthors: z.number() }).passthrough(),
+    authorDateFormat: z.object({ etAlFromAuthors: z.number(), etAlItalic: z.boolean() }).passthrough(),
   }).passthrough(),
   references: z.object({}).passthrough(),
   preTextualElements: z.object({}).passthrough().optional(),
