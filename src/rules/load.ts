@@ -1,6 +1,7 @@
 import rawJson from '../../config/abnt-2024.rules.json'; // Vitest/Vite resolve JSON; tsconfig resolveJsonModule
 import { rulesJsonSchema } from './schema';
 import { cmToTw, ptToHalfPt, spacingToLine } from './units';
+import type { ProfileOverrides } from '../model/types';
 
 export type TitleStyle = { case: 'uppercase'|'title'|'sentence'; bold: boolean; italic: boolean };
 export type ResolvedRules = {
@@ -50,4 +51,28 @@ export function loadRules(profile: 'abnt-2024'): ResolvedRules {
     },
     unnumberedTitles: { case: 'uppercase', bold: true },
   };
+}
+
+const MIN_MARGIN_CM = 2.0; // menor valor admitido pela ABNT (inferior/direita)
+
+export function applyOverrides(rules: ResolvedRules, overrides?: ProfileOverrides): ResolvedRules {
+  if (!overrides) return rules;
+  const next: ResolvedRules = structuredClone(rules);
+
+  if (overrides.fontFamily) next.fonts.family = overrides.fontFamily;
+  if (overrides.citationSystem) next.citations.system = overrides.citationSystem;
+
+  if (overrides.titleStylesByLevel) {
+    for (const [lvl, style] of Object.entries(overrides.titleStylesByLevel)) {
+      next.sections.titleStylesByLevel[Number(lvl) as 1|2|3|4|5] = style!;
+    }
+  }
+
+  if (overrides.margins) {
+    for (const [side, cm] of Object.entries(overrides.margins) as [keyof typeof overrides.margins, number][]) {
+      if (cm < MIN_MARGIN_CM) throw new Error(`margem ${cm}cm < mínimo ${MIN_MARGIN_CM}cm (${side})`);
+      next.page.margin[side] = cmToTw(cm);
+    }
+  }
+  return next;
 }
